@@ -19,4 +19,10 @@
 - 李沐
   - Transformer
 
+
+
+### 上课笔记
+- 549 什么年代了还在抽传统香烟（CV）
+
+- 522 Emerging Memory System
 ### 未完待续...

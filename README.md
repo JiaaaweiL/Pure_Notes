@@ -11,7 +11,7 @@
 ### 机器学习
 - 李宏毅的课选看啦  
   [课程链接](https://speech.ee.ntu.edu.tw/~hylee/ml/2022-spring.php)
-  - Intro (review)
+  - Intro (review) 复习了看了就行了没啥好记的
   - Image as input
   - Sequence as input
   - Encoder, Decoder

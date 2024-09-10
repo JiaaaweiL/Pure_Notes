@@ -19,7 +19,10 @@
 - 李沐
   - Transformer
 
-
+### 搞搞系统
+- Zomi佬的视频
+  [佬的链接](https://space.bilibili.com/517221395/channel/collectiondetail?sid=3130927)
+   - 集合通信原理
 
 ### 上课笔记
 - 549 什么年代了还在抽传统香烟（CV）

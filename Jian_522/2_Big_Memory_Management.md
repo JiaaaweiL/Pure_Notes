@@ -36,3 +36,8 @@ Today: 128 TLB!
 1. Increase Tail Latency(searching, compaction, unpredictable performance)  
 2. Fragmentation issue
 3. Unfairness(race condition on regular page, huge page)
+
+
+
+
+

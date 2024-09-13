@@ -25,3 +25,14 @@ Today: 128 TLB!
 
 5 years ago, lots of research about TLBs. Now most of them are about AI :(  
 
+## How OS support for Huge page management
+**Two common page sizes in modern processors: 2MB/1GB**   
+- Ensure the corresponding flags in CPU info is configured.
+    - PSE/PDPE
+- Enable huge page when booting your system
+    - CONFIG_HUGETLB_PAGE=y
+
+**Challenges of using huge page**
+1. Increase Tail Latency(searching, compaction, unpredictable performance)  
+2. Fragmentation issue
+3. Unfairness(race condition on regular page, huge page)

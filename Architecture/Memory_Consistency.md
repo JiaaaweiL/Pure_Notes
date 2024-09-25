@@ -56,4 +56,7 @@ Load L1， L2, 如果先执行了L2,然后是L1,（乱序speculative）, 然而�
 2.  在speculative指令提交的时候重新检查值是否于之前的一致。如果不是，判定取消预测性，并且squash（推测是在commit的时候replay的时间比第一次执行的时间短得多，因此这个trade off 是划算的）
 
 
+## TSO x86的memory model
+
+
 

@@ -26,14 +26,34 @@ Single Core的consistency： 执行结果与操作按照程序指定的顺序执
 Multi Core的consistency： 执行的结果与 将几个线程的程序按照顺序排在一起，且线程内的命令顺序与程序顺序一致 相同   
 
 **来点儿数学表达**
-![image](https://github.com/user-attachments/assets/eb1fcc32-6288-4d48-8311-8f106a2bfdcb)
+![image](https://github.com/user-attachments/assets/eb1fcc32-6288-4d48-8311-8f106a2bfdcb)  
 La < Lb : La先执行，Lb后执行。p: program, m: memory  
 ![image](https://github.com/user-attachments/assets/091991e9-9a01-4a56-89af-b8550fc19532)  
-意味着 La 永远取最后一次store的值
+意味着 La 永远取最后一次store的值  
 
+### 如果是：implemetation 怎么做呢？
+单核： 单核都不需要什么fansy skill, 只需要保证当context switch的时候，所有延迟的内存操作必须施加在内存上即可。  
+多核： 简单的是switch 轮到谁了就是谁，用时间做切分，随机也可以。  
+![image](https://github.com/user-attachments/assets/22817e30-6850-4769-87af-39fdd4a71b6f)  
 
+**SC 永远是golden rule**
 
+### SC implementation 和CC的优化
+- Non-Binding Prefetching
+先来介绍介绍这是啥：  （by GPT）  
+普通预取：会实际把数据从内存加载到缓存，可能导致缓存污染。如果数据被使用，它可以加速程序执行；如果不被使用，可能浪费缓存空间。    
+非绑定预取：不会直接加载数据，而是提前准备缓存的一致性权限（如“共享”或“已修改”状态），并且对程序行为不产生强制影响。如果预取的数据没有被使用，程序执行不会受到影响。   
+不强制绑定：非绑定预取不会改变寄存器或数据，仅仅是改变缓存中的一致性状态。也就是说，它不会对程序的执行逻辑产生直接影响。如果某个预取失败（即预取的数据没有被后续使用），程序的执行不会因此出错或异常。  
+**意义点在于：** 核心变多之后，修改一致性状态需要与其他核心竞争/通信。Non-Binding Prefetching 可以隐藏这部分的延迟
+**如何恢复？** 不需要恢复，错了就错了？不行啊！一个invalid 如果被改成shared，那么结果不就会错完？
+Non-binding Prefetch 不会改变MC状态
 
+- Speculative Core
+如果运用了Dynamically Scheduled Cores则会出现问题：
+Load L1， L2, 如果先执行了L2,然后是L1,（乱序speculative）, 然而这个speculative对于其他的核心不可见，则会违反SC原则。  
+两个方法：
+1.  检测先执行的speculative L2 会不会被移除cache（会不会被其他核看见） 如果会，则取消这条指令的预测性操作。（那么，Memory consistency就指的是：内存看到的数据，从而忽略缓存的行为？）
+2.  在speculative指令提交的时候重新检查值是否于之前的一致。如果不是，判定取消预测性，并且squash（推测是在commit的时候replay的时间比第一次执行的时间短得多，因此这个trade off 是划算的）
 
 
 

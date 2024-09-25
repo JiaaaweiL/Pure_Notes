@@ -24,5 +24,16 @@ dependency） 然后结果就变成了**S2, L1, L2, S1** 然后r2的结果就可
 ## 最简单的， SC sequential consistency
 Single Core的consistency： 执行结果与操作按照程序指定的顺序执行的结果相同  
 Multi Core的consistency： 执行的结果与 将几个线程的程序按照顺序排在一起，且线程内的命令顺序与程序顺序一致 相同   
+
 **来点儿数学表达**
 ![image](https://github.com/user-attachments/assets/eb1fcc32-6288-4d48-8311-8f106a2bfdcb)
+La < Lb : La先执行，Lb后执行。p: program, m: memory  
+![image](https://github.com/user-attachments/assets/091991e9-9a01-4a56-89af-b8550fc19532)  
+意味着 La 永远取最后一次store的值
+
+
+
+
+
+
+

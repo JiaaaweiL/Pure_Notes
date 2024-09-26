@@ -76,6 +76,21 @@ Speculative本质上不会出问题（违反SC）， 原因很简单，因为squ
 运行时，R10K 以程序顺序发射LS指令到地址queue。load-store中间有一个forwarding。地址相同的情况下，load指令的data可以直接从最老store中获取。 如果上述和不成立，LS指令的commit顺序是程序顺序，然后从queue中移除地址。Store指令的操作顺序是：L1cache 保持M state（用或者不用non-binding prefetch无所谓）， 然后store将数据写入cache的同时commit掉指令。
 
 ## TSO x86的memory model  
+为什么有TSO? 因为write buffer实在是太好用了。 Store指令可以直接将store value放进store buffer然后继续执行，减少对CPU的阻塞，隐藏了延迟。  
+对于单核处理器而言，write buffer基本上是架构不可见的。 但是对于多核处理器而言，write buffer的架构不可见策略就完全错了。  
+   ![image](https://github.com/user-attachments/assets/d5422a40-d796-4dc6-aabd-3d7157fc6bfd)   
+我们期望的值有什么？ (0, new), (new, 0), (new, new) 然而实际上的可能是，出现的结果可以是（0, 0）,这是因为写操作被丢尽写缓存里面。  
 
+### SC 和 TSO 有什么不同？
+SC 强调的四种关系 load -> load,    load -> store,   Store -> Store,   Store -> Load, 然而TSO 只强调前三种，剔除了最后一种关系。  
+数学表达
+![image](https://github.com/user-attachments/assets/7f69f5e5-d77d-4347-97e5-79aa32d525c1)   
+说白了，就是甩锅给程序员。要么你自己插fance，要么就别期望两个store-load施加到内存的顺序有保证
+Fance的数学表达
+![image](https://github.com/user-attachments/assets/ca23b414-f92a-494a-8591-8bd75f25051e)  
+将白了。Fance会保证fance之前的内存操作都被施加于内存。之后才能跨过fance进行fance之后的操作
+
+### Implementing TSO
+TSO的Implementation和SC的其实很像， 多了一个per-core FIFO write buffers. 
 
 

@@ -55,10 +55,27 @@ Speculative本质上不会出问题（违反SC）， 原因很简单，因为squ
 1. Load指令mispredict， Core丢掉寄存器的值，把流水线清空，完事。 因为是load，non-binding prefetch做的invalid/modified 变成share也不需要考虑别的因素，缓存被换掉的时候反正不会写回内存的   
 2. Store指令会先做non-binding prefetch，然后等它百分之一百会被commit的时候再施加于内存。（回想一下pipeline，branch是在EX被确定的，然后会把流水线flush掉。根本不存在让错误的LS走到第四个stage）     
 
+- Dynamically Scheduled Core（没错，这个core是OoO的core了）   
+会有一个核心问题：Memory Consistency Speculation，考虑两个Load指令，如果被reorder了，当然会违反SC。  
+解决思路是： Speculating on SC 需要核去证明你的speculation是对的。  两种方法：
+1. 检测并且确保在commit L2之前，对于缓存的更改局限在私有缓存范围内。换句话说： 在私有内存里面进行的操作不会被别的核心看见，可以放心操作
+2. 在commit的时候进行重播load操作。如果重播数据没变代表这是有效且未更改的（很蠢，而且貌似仅仅只针对load。没办法重播store）  
 
+- Non-Binding Prefetching in Dynamically Scheduled Core
+  最主要的是： 从全局系统的角度看，所有核心的加载和存储操作必须按照一定的顺序执行。无论这些操作是否在私有缓存中乱序执行，最终它们被提交到共享内存或主存时，必须看起来像是按照程序顺序执行的。
 
+**讲白了，想怎么存都可以，提交顺序一定是按照程序的顺序！！！**
 
-## TSO x86的memory model
+### 原子操作对于SC的意义：没有atomic operation就没有multi-threading
+核心是：确保RMW(read modified write)中间的没有任何指令的插入。  
+- 简单的方法：锁总线！这样就不会有指令打断RMW了
+- 稍微复杂一点的方法： 对于需要修改的锁，将其的CC状态锁起来，例如，改成Modified，然后未完成之前不许其他缓存块访问此块
+ 
+### 总结起来的Case study： MIPS R10K
+4-way superscalar RISC processor core,有分支预测单元。 用directory coherence protocal。  
+运行时，R10K 以程序顺序发射LS指令到地址queue。load-store中间有一个forwarding。地址相同的情况下，load指令的data可以直接从最老store中获取。 如果上述和不成立，LS指令的commit顺序是程序顺序，然后从queue中移除地址。Store指令的操作顺序是：L1cache 保持M state（用或者不用non-binding prefetch无所谓）， 然后store将数据写入cache的同时commit掉指令。
+
+## TSO x86的memory model  
 
 
 

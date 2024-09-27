@@ -92,5 +92,15 @@ Fance的数学表达
 
 ### Implementing TSO
 TSO的Implementation和SC的其实很像， 多了一个per-core FIFO write buffers. 
+TSO SC的主要区别是TSO允许存储操作可以延迟可见。换句话说，存储操作不需要立即对其他核心或线程可见，而是可以先进入一个写缓冲区，核心继续执行后续指令。这种机制通过引入每个核心的FIFO写缓冲区来实现  
+TSO允许bypass。有load先去store queue里面找，看看能不能抄到答案  
+写缓冲区的引入使得存储操作可以被延迟，但这并不会破坏MC，因为从全局角度看，内存操作的commit必须顺序发生。  
+多线程中，TSO write buffer 必须对于每一个线程的上下文私有。因此，必须是（线程切换前清空/associative with threadID)    
+
+### Atomic Instruction
+和SC的Atomic Instruction基本相同。唯一的不同是需要支持write buffer。有可能出现的情况是要Write may be written to the write buffer.   
+**因此就有如下两种顺序要求**
+加载不能越过加载：由于TSO模型要求程序顺序的加载指令必须按顺序执行，RMW中的加载部分不能在之前的加载指令之前执行。  
+存储不能越过存储：TSO还规定存储指令不能乱序，因此RMW中的存储部分不能在之前的存储指令之前执行。这种顺序约束适用于所有存储操作，包括在写缓冲区中的那些。  
 
 

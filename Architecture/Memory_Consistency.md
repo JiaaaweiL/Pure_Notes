@@ -126,10 +126,10 @@ S1 → S3 → L1 loads SET → L2  和   S2 → S3 → L1 loads SET → L3 然�
 再来看一个顺序  
  ![image](https://github.com/user-attachments/assets/c9c6fbf2-b21a-44a5-a8da-bc887b4f3fc5)   
  在这个例子里面的保序模型是 All L1i, All S1j → R1 → A2 → All L2i, All S2j, 仔细读来就会发现其中包含了很多没有用的order。正确方法是：如果两个critical region中包含
- 了相同的地址（对于相同地址进行load，store） 则需要注意MC。 那也就是   
- All L1i and S1j can be in any order with respect to each other, and   
+ 了相同的地址（对于相同地址进行load，store） 则需要注意MC。 那也就是：    
+All L1i and S1j can be in any order with respect to each other, and   
 All L2i and S2j can be in any order with respect to each other.   
-
+如果第一个
 
 
 

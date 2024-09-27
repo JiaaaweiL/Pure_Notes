@@ -21,7 +21,7 @@ dependency） 然后结果就变成了**S2, L1, L2, S1** 然后r2的结果就可
 内存一致性模型，或者更简单地说，内存模型，是使用共享内存执行的多线程程序允许的行为的规范。对于使用特定输入数据
 执行的多线程程序，它指定动态加载可能返回的值以及内存的最终状态。  总的来说，MC是给定一个规则，将程序分为遵守MC或者不遵守MC
 
-## 最简单的， SC sequential consistency
+# 最简单的， SC sequential consistency
 Single Core的consistency： 执行结果与操作按照程序指定的顺序执行的结果相同  
 Multi Core的consistency： 执行的结果与 将几个线程的程序按照顺序排在一起，且线程内的命令顺序与程序顺序一致 相同   
 
@@ -75,7 +75,7 @@ Speculative本质上不会出问题（违反SC）， 原因很简单，因为squ
 4-way superscalar RISC processor core,有分支预测单元。 用directory coherence protocal。  
 运行时，R10K 以程序顺序发射LS指令到地址queue。load-store中间有一个forwarding。地址相同的情况下，load指令的data可以直接从最老store中获取。 如果上述和不成立，LS指令的commit顺序是程序顺序，然后从queue中移除地址。Store指令的操作顺序是：L1cache 保持M state（用或者不用non-binding prefetch无所谓）， 然后store将数据写入cache的同时commit掉指令。
 
-## TSO x86的memory model  
+# TSO x86的memory model  
 为什么有TSO? 因为write buffer实在是太好用了。 Store指令可以直接将store value放进store buffer然后继续执行，减少对CPU的阻塞，隐藏了延迟。  
 对于单核处理器而言，write buffer基本上是架构不可见的。 但是对于多核处理器而言，write buffer的架构不可见策略就完全错了。  
    ![image](https://github.com/user-attachments/assets/d5422a40-d796-4dc6-aabd-3d7157fc6bfd)   
@@ -116,7 +116,7 @@ TSO允许bypass。有load先去store queue里面找，看看能不能抄到答�
 好的内存一致性模型应该具备的四个关键要素（4P）Programmability（可编程性）， Performance（性能）， Portability（可移植性）， Precision（精确性）   
 SC最直观简单，TSO相对来说难理解一点。理论上TSO会效果更好，但是因为有speculative execution，SC的性能也不会差太多。两者的定义都很percise  
 
-
+# Relax
 
 
 

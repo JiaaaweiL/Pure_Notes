@@ -101,6 +101,27 @@ TSO允许bypass。有load先去store queue里面找，看看能不能抄到答�
 和SC的Atomic Instruction基本相同。唯一的不同是需要支持write buffer。有可能出现的情况是要Write may be written to the write buffer.   
 **因此就有如下两种顺序要求**
 加载不能越过加载：由于TSO模型要求程序顺序的加载指令必须按顺序执行，RMW中的加载部分不能在之前的加载指令之前执行。  
-存储不能越过存储：TSO还规定存储指令不能乱序，因此RMW中的存储部分不能在之前的存储指令之前执行。这种顺序约束适用于所有存储操作，包括在写缓冲区中的那些。  
+存储不能越过存储：TSO 还规定存储指令不能乱序，因此RMW 中的存储部分不能在之前的存储指令之前执行。包括在写缓冲区中的待写。  
+而且，因为是atomic operation，所以意味着，RMW的read（load) 和 write（store)得是一体的。  
+所以，RMW之前的store必须首先被提交（store不能超过store） -> **清空缓冲区**   
+因为RMW是原子操作，所以**必须提前抢占M**（意味着只有原子操作能够修改对应位置缓存块）并且在操作期间**不 能 放 弃 M state** 意味着需要锁住这个缓存状态位   
+**一种优化方法：**  
+假设写缓冲区有这个你需要原子操作的地址，做法是可以不用清空缓冲区+无需提前抢占M state。原因如下：
+因为写缓冲区有，所以可以直接bypass的读到，完成了read（load） 完了因为已经在写缓冲区了，意味着M state的权限已经归于这个核心了，所以也不需要抢占，只需要保持。然后仅仅需要将新的写结果放入queue的新的entry就可以了  
+
+### Fance的Implementation
+因为使用频率非常低，所以非常简单粗暴的方法也不会带来很多性能损耗，那就是：在FANCE指令发出时候，清空读写queue，然后才允许新的指令进来。    
+
+### 评价
+好的内存一致性模型应该具备的四个关键要素（4P）Programmability（可编程性）， Performance（性能）， Portability（可移植性）， Precision（精确性）   
+SC最直观简单，TSO相对来说难理解一点。理论上TSO会效果更好，但是因为有speculative execution，SC的性能也不会差太多。两者的定义都很percise  
+
+
+
+
+
+
+
+
 
 

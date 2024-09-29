@@ -129,9 +129,24 @@ S1 → S3 → L1 loads SET → L2  和   S2 → S3 → L1 loads SET → L3 然�
  了相同的地址（对于相同地址进行load，store） 则需要注意MC。 那也就是：    
 All L1i and S1j can be in any order with respect to each other, and   
 All L2i and S2j can be in any order with respect to each other.   
-如果第一个
+意味着：critical region中的Load Store，如果地址不同则无需保序。但是两个CR要互相保序。  
 
 
+### 一些可能的优化：
+non-fifo， coalescing write buffer：  这里的coalescing的意思是： 当两个写操作目标地址一致的时候，可以统一写操作，避免多次写入。 很显然是违反TSO的，因为TSO强制要求保序（program order） relax model可以这么做，如果没有fence强制隔开的化。   
+
+简单的对core speculation的支持： 在强一致性模型中，也可以在commit之前做乱序做推测执行。例子是R10K 处理器。 但是要具备相应的检查机制（参照SC模型的机制1和2，保持修改缓存的私有和重放执行） 代价显而易见，是硬件复杂度和面积功耗。 另外还有弱一致性，完全随意乱序， 并且不需要一致性检查。   
+
+coherence和consistency的耦合/解耦: 上述所有讨论基于的模型是SWMR(single writer multiple reader) 如果放开这个原则可以提高性能，但它引入了很多复杂性，尤其是在验证正确性时。如果允许部分核心看到不同版本的数据，这将大大增加系统设计中的逻辑复杂性，因为需要设计相应的机制来追踪和解决这些不一致。  
+
+## XC模型（这就是个 teaching purposes 模型！大概率是不存在的）
+提供了什么：Fence。当顺序需要的时候，会用fence保证。除此之外，load 和 store 都是乱序的。   
+Notation: core Ci 处理load/store指令（Xi），然后fence指令，然后load/store指令（Yi）。FENCE起到了一个分隔操作的作用，确保前后的内存操作不会乱序执行。两个Fance指令之间互相保序，但是fance指令作用只能在一个核内。   
+所以XC的memory order就会是：  
+Load → FENCE        Store → FENCE        
+FENCE → FENCE        FENCE → Load         FENCE → Store
+对于同地址的Load/Store， XC将会以TSO来保序，例如
+![image](https://github.com/user-attachments/assets/a7b40984-94f5-4ed7-a2b6-857b49445840)   
 
 
 

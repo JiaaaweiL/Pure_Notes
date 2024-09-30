@@ -145,8 +145,14 @@ Notation: core Ci 处理load/store指令（Xi），然后fence指令，然后loa
 所以XC的memory order就会是：  
 Load → FENCE        Store → FENCE        
 FENCE → FENCE        FENCE → Load         FENCE → Store
-对于同地址的Load/Store， XC将会以TSO来保序，例如
-![image](https://github.com/user-attachments/assets/a7b40984-94f5-4ed7-a2b6-857b49445840)   
+对于同地址的Load/Store， XC将会以TSO来保序，例如  
+![image](https://github.com/user-attachments/assets/a7b40984-94f5-4ed7-a2b6-857b49445840)    
+数学表示也相当简单，跟之前的一样，即：  
+有fance存在，就必须把fance之前的内存操作清空，然后才能是fance。   
+fance之间必须互相保序。    
+同地址的load store操作，需要遵循TSO（是TSO噢不是SC）   
+![image](https://github.com/user-attachments/assets/f9011d6b-4eac-44b6-93f9-8979ce5b0a06)  
+
 
 
 

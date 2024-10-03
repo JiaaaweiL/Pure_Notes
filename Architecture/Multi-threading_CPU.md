@@ -42,8 +42,8 @@ chip multiprocessor没有能力去改变垂直浪费和水平浪费。但是这�
 例子：臭名昭著的AMD 推土机。  
 [一点黑话：为什么推土机这么TM菜！](https://www.reddit.com/r/Amd/comments/5q91tn/what_made_the_bulldozer_architecture_so_bad/)    
 
-
-
+### Coarse-Grain multithreading
+粗粒度多线程， AKA block multithreading or switch-on-event multithreading。 一个计算核与很多个hardware context相绑定。hardware context可以是PC， regfile等等。
 
 
 

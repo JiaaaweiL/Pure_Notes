@@ -36,3 +36,23 @@ covergroup cg with function sample(
 endgroup : cg
 
 ```
+
+### 大概解释一下 不一定对：
+```systemverilog
+  coverpoint a;
+
+  // Same for b.
+  coverpoint b;
+
+  // Checks that your testbench exercises all valid operations.
+  coverpoint op {
+    bins range[] = {[0:8]};
+  }
+
+```
+我们需要一个covergrop去探测A, B, 和OP。 这个covergroup的覆盖率会被打进报告里，用sample采样。验证机制目前未知？
+对于OP，我们的范围是0~8。我们只在乎这几个值
+cross的意思是：我们需要交叉验证对于b_shift_bits的每一个op的情况。
+我么你想安定了，说，对于op而言，有两种情况下的op是没用的。分别是0~5  和 8~15的情况。
+
+

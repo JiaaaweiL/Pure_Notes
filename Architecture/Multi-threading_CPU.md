@@ -47,7 +47,18 @@ chip multiprocessor没有能力去改变垂直浪费和水平浪费。但是这�
 [一点黑话：为什么推土机这么TM菜！](https://www.reddit.com/r/Amd/comments/5q91tn/what_made_the_bulldozer_architecture_so_bad/)    
 
 ### Coarse-Grain multithreading
-粗粒度多线程， AKA block multithreading or switch-on-event multithreading。 一个计算核与很多个hardware context相绑定。hardware context可以是PC， regfile等等。
+粗粒度多线程， AKA block multithreading or switch-on-event multithreading。 一个计算核与很多个hardware context相绑定。hardware context可以是PC， regfile等等。 但是只有一个硬件context可以获取上下文， 所以，我们仅仅可以使用context switch来掩盖某个指令流的latency。 本质上来说，Coarse grain的multi-thread的模式很像很像软件多线程，只是硬件多线程context switch的速度会快很多很多。 软件多线程能够隐藏的非常长的延迟，比如说进disk。然而硬件多线程可以handle例如cache miss， 等待barrier之类的延迟和。    
+Coarse grain的多线程不能够作用于horizontal waste/长的vertical waste。 非执行的寄存器可以放置在核心更远的地方。只有正在执行的线程的寄存器会被放进寄存器内。   
 
+### Fine-Grain Multithreading
+细粒度多线程， interleaved multithreading， 也是讲多个硬件上下文关联到每个核心，但是上下文切换是没有延迟的。 因此， 它可以每周期的切换处理来自不同线程的指令（COARSE Grain需要浪费一些vertical cycle来做切换）。  
+但是再一个流水线阶段里，只有一个线程的指令能够存在。    
+FGM仍然不能解决水平浪费。但是能够消除垂直浪费（如果遇到一个等待时间超级长的，就直接执行另一个线程的指令）在超标量处理器带来之前，FGM是最激进的多线程模型。   
+即便FGM机器只需要读取一个线程的寄存器，但是它可能会在下一个CC读取新的context的寄存器。 因此所有的寄存器必须距离流水线尽可能的近，虽然不存在同时读的情况。
 
-
+### SMT, simultaneous multithreading
+SMT 与粗粒度和细粒度多线程一样，拥有多个硬件上下文（包括程序计数器、寄存器文件等），使多个线程能够在同一个处理器核心上并发执行。     
+无上下文切换：在 SMT 中，没有传统的“上下文切换”概念。与粗粒度多线程需要几个周期、细粒度多线程在每个周期切换线程不同，SMT 允许多个线程的指令同时存在于流水线的不同阶段，无需切换线程上下文。所有线程的指令都可以随时被发射和执行。   
+解决垂直浪费：SMT 通过允许多个线程同时运行来隐藏长延迟（例如缓存未命中），当一个线程因延迟而无法继续执行时，其他线程的指令可以立即利用可用的执行资源。    
+解决水平浪费：与细粒度多线程不同，SMT 可以在每个周期检查所有线程的指令，并寻找可以立即发射的指令。如果一个线程暂时没有可发射的指令，其他线程可以填补这个空闲的发射带宽。这意味着，任何线程无法使用的资源都可以自动被其他线程利用，从而减少水平浪费。   
+由于 SMT 允许多个线程的指令同时发射并执行，因此所有硬件上下文中的寄存器文件必须能够快速访问并供流水线使用。这是为了确保在每个周期中，无论哪个线程的指令被发射，处理器都能够及时获取所需的寄存器数据。    

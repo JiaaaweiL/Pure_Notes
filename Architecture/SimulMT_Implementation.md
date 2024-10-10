@@ -30,7 +30,11 @@ Issue queue应该不怎么变，要增加branch recovery时，根据线程来flu
 RAT的数量是architectual reg * number of thread。已经说过了，更多的thread肯定会要求增加physical reg的数量的。     
 有一个问题是：增多physical reg的数量会导致access latency变慢。 Tullsen et al. [1996] show that an extra register stage costs single-thread execution 2% on average. 但是alpha21464并没有发现这个问题？ R10K的基准数据是半个CC能够读写一个reg。     
 
-### 
+### 扯扯淡：SMT的能效比问题：
+极高性能要求的服务器场景中，SMT是非常有效的架构。最大化了指令吞吐量，特别是将性能定义成IPC时。   
+能耗受限时，也可以SMT，条件是有很好的TLP且需要高性能。（LUNA LAKE???) 还可以选择宽的顺序核心结合SMT（我不懂是怎么做的）  
+对比起CMP， SMT的能耗比非常高。因为SMT核心的成本远低于CMP中启动第二个线程的成本。因为CMP中的每个线程需要独立占用核心。  
+SMT主要带来的问题： FU争用，缓存带宽争用，instruction queue征用，renaming的征用，BP的准确率下降。  
 
 
 

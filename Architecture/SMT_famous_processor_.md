@@ -25,4 +25,4 @@ Power5 也有单线程模式。Power5的资源是动态共享（而不是静态�
 Power6： 双核多线程，但是不是乱序执行，是顺序执行。（因为是顺序所以CR短Freq高）顺序执行+SMT来提高Throughput（怎么办到的？所以还是超标量？+不乱序做SMT???) 去读论文然后看架构吧？ 然后也是用指令打包成组发射执行。每一组最多五条。两个线程组最多七条，一起发射（超标量），（GPU既视感）。  
 Power7： 继续OoO。 在每个核心上支持 4 个线程（比 Power6 的 2 个线程更多），并增加了超标量执行宽度（6 发射单元）。支持单线程，双线程，和四线程模式。   
 在 ST 和 SMT2 模式下，每个线程的寄存器文件和流水线是共享的，允许线程灵活地将指令分派到任何流水线中。在 SMT4 模式下，寄存器文件和流水线是独立的，分别服务于两个线程。这种设计允许 Power7 在不同模式之间动态切换，从 **集群架构（Clustered Architecture多个线程共享流水线）切换到 结合核心架构（Conjoined Core Architecture多个流水线分别服务不同的线程）（INTERESTING!)** 看论文去吧靠北！  
-[Power7](https://www.researchgate.net/profile/Michael-Floyd-4/publication/220290623_Power7_IBM's_Next-Generation_Server_Processor/links/00463515dcf82abd08000000/Power7-IBMs-Next-Generation-Server-Processor.pdf)
+[Power7 论文链接](https://www.researchgate.net/profile/Michael-Floyd-4/publication/220290623_Power7_IBM's_Next-Generation_Server_Processor/links/00463515dcf82abd08000000/Power7-IBMs-Next-Generation-Server-Processor.pdf)

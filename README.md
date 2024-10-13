@@ -3,6 +3,9 @@
 ### 体系结构
 - Memory Consistency
 - Multi-thread CPU
+  - Multi-Thread Module
+  - SimulMT-Implementation
+  - SMT-famous_processor(锐评系列）
 - 特辑：理解图灵机
 - 特辑：ljw和他的乱序多发射超标量多线程CPU
 

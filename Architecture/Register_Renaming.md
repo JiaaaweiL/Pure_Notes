@@ -44,5 +44,7 @@ issue 方式。
 核心问题是，一个reg合适能编程空闲状态呢？ 最简单的方法是，同一个arch RD被退休的时候，释放上次占用的pd。   
 详细内容参照411。     
 优势是： 寄存器的值只需要被写入一次，不需要再进行移动。再另外两种方法中，一个寄存器的值再生命周期之内有两个地方要存放。第一次写进ROB或者PRF中，第二次写道ARF中。所以基于ROB的是read/write hungary的。除此之外，前两种方法中，有两个地方（ROB/ARF）能存储源寄存器的值。所以需要更复杂的连线和通信。  
-![image](https://github.com/user-attachments/assets/0f780948-4d44-4296-b48d-8f58d4e7a9c5)  
+
+## RAT，重命名映射表
+一个表格，使用Archi寄存器来寻址，得到对应的physical reg 编号。 物理实现上，要么用SRAM（sRAT），要么用CAM(cRAT)。
 

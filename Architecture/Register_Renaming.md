@@ -39,4 +39,10 @@ issue 方式。
 解决的问题是：ISA的有一些指令不需要重命名，例如branach，例如store。 如果采用上述的方法会浪费ROB的空间。因此可以将Physical Reg File独立成一个部件。 之前是将value存在ROB里面，现在就是将ROB里面的Value换成Physical register 的index，然后在做一次检索。这种方法还是需要一个renaming table。只不过之前记载的是ROB entry，现在记载的是Physical Reg File 的pointer。  
 
 ### 3. 使用统一的PRF进行Reg renaming（ERR，我写的）
+将上述的ARF和PRF进行了合并，统一称之为PRF。 其中存储了所有的speculative/retire的寄存器值。 很显然尊崇Physical reg = rob + architectural的逻辑。    
+两个RAT，一个负责解码后的AR到PR的映射，一个负责commit后AR到PR映射（叫RRAT, Retired RAT）。 外界的观察窗只能观察到RRAT映射的PR。    
+核心问题是，一个reg合适能编程空闲状态呢？ 最简单的方法是，同一个arch RD被退休的时候，释放上次占用的pd。   
+详细内容参照411。     
+优势是： 寄存器的值只需要被写入一次，不需要再进行移动。再另外两种方法中，一个寄存器的值再生命周期之内有两个地方要存放。第一次写进ROB或者PRF中，第二次写道ARF中。所以基于ROB的是read/write hungary的。除此之外，前两种方法中，有两个地方（ROB/ARF）能存储源寄存器的值。所以需要更复杂的连线和通信。  
+![image](https://github.com/user-attachments/assets/0f780948-4d44-4296-b48d-8f58d4e7a9c5)  
 

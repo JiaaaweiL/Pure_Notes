@@ -35,3 +35,8 @@ issue 方式。
 
 但是这种方法容易实现，设计复杂度也不高。Intel的P6架构的所有处理器都能见到他的影子。  
 
+### 2. 将ARF扩展进行重命名
+解决的问题是：ISA的有一些指令不需要重命名，例如branach，例如store。 如果采用上述的方法会浪费ROB的空间。因此可以将Physical Reg File独立成一个部件。 之前是将value存在ROB里面，现在就是将ROB里面的Value换成Physical register 的index，然后在做一次检索。这种方法还是需要一个renaming table。只不过之前记载的是ROB entry，现在记载的是Physical Reg File 的pointer。  
+
+### 3. 使用统一的PRF进行Reg renaming（ERR，我写的）
+

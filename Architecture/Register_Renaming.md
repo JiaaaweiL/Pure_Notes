@@ -48,3 +48,17 @@ issue 方式。
 ## RAT，重命名映射表
 一个表格，使用Archi寄存器来寻址，得到对应的physical reg 编号。 物理实现上，要么用SRAM（sRAT），要么用CAM(cRAT)。
 
+### 基于SRAM的重命名表：
+对于每一个branch，都要做一个check point。对应关系不需要任何的标识位(用CAM可以增添标识位)。 当需要对分支指令的状态进行checkpoint保存时，需要将整个SRAM都保存起来。因此问题是：占用很大的面积。因此checkpoint数量不会很多。 例如，MIPS:R10K 一共有4个checkpoint。 为了知道那些physical register是空闲状态，还需要一个free list来记录。 新写道SRAT的值会覆盖掉原来旧的对应关系。可以保存到ROB中（这种方法是 用checkpoint然后恢复FREE LIST，不是411的free list恢复）（**当初411是怎么解决的？？有点忘了？**）     
+现代处理器中大量的使用了预测算法。如果branch的预测是正确的，使用checkpoint就是浪费。那么，其实可以对低风险的指令不做checkpoint备份，只对高风险的branch做checkpoints。不做checkpoint（意味着不用EBR）然后flush到整条流水线，或者交由OS当成异常处理？     
+
+### 基于CAM的重命名映射表
+CAM不会对地址进行直接解码，而是将地址与储存器中每一个entry的内容进行比较，比较是相等的entry的地址是最终的结果（像fully associative cache）。在基于CAM的CRAT中，表象的个数等于物理寄存器的个数，使用Arch的编号对cRAT进行CAM寻址。每个ArchReg在cRAT中只能由一个有效的表象能与之对应（一个archi reg 能在cRAT中出现很多次，但是必须只有一个是valid)。每次进行checkpoint的时候，就保存一个有效位即可。   
+![image](https://github.com/user-attachments/assets/33068e59-a034-49fd-b3ad-e5296399873a)   
+每多一个checkpoint，只需要多出一个bit column。 所以能允许很多很多个checkpoint。 对于写cRAT，只需要将其作为一个普通的储存器，使用物理寄存器的编号作为地址就可以了。  
+
+一条分支指令在进行重命名之前，需要将cRAT中的V bit复制到CP中，完成checkpoint。 当后续阶段完成后， （如果发现mis predict）直接将CP中的写回valid bit就行了。 
+
+
+
+

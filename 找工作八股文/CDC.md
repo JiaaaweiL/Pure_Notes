@@ -50,9 +50,35 @@ setup time 和hold time。这些被采样的数据必须在setup-time hold-time�
 Multi-bit signal consolidation的问题： 
 1. 两个同时需要的控制信号，因为时钟抖动背错开发送导致数据丢失，如何解决呢？    
 ![image](https://github.com/user-attachments/assets/f091baa2-0824-4e89-9f11-1598ed9babcb)    
-很简单！load 和 enable直接在第一个时钟域内做成一个信号。     
+很简单！load 和 enable直接在第一个时钟域内做成一个信号。      
 
-2. 
+
+解决方法： MULTI-CYCLE PATH FORMULATION:    
+1. closed-loop MCP formulation with feedback  
+2. closed-loop MCP formulation with acknowledge feedback  
+3. asynchronous FIFO implementation  
+4. 2-deep FIFO implementation
+
+
+MCP formulation: 发送的数据不同步，但是控制信号同步。   
+在接收时钟域中，数据信号到达后直接稳态地放置在目标寄存器的输入端，但还不能立即被采样。    
+控制信号经过同步电路，在接收时钟域中被同步两个时钟周期，确保在跨时钟域过程中不会产生不一致的时序。   
+好处1： 发送时钟域不需要计算脉冲宽度。   
+好处2： 发送时钟域只需向接收时钟域发送一个enable信号，表示数据已经准备好可以加载。这个启用信号不需要恢复到初始逻辑电平（即它不需要返回到0）   
+
+MCP策略的关键是将未经同步的数据直接传递到接收时钟域，同时通过一个同步后的enable信号来控制什么时候可以采样这些数据。这意味着：     
+未经同步的数据信号 会在接收时钟域保持稳定多个时钟周期，而不会立即进行采样。    
+同步后的enable信号 在经过同步器处理后，才允许接收时钟域的寄存器采样数据。    
+数据保持稳定：未经同步的数据在接收时钟域保持稳定多个时钟周期，确保在采样时不会出现数据变化导致的错误。这意味着即使数据在传输过程中不稳定，接收时钟域也不会在错误的时刻采样。     
+防止亚稳态：由于数据保持稳定且只有在enable信号同步后才允许采样，因此可以避免采样数据时进入亚稳态的风险。   
+### MCP open-loop
+![image](https://github.com/user-attachments/assets/92d6720f-4d85-4f61-840e-92baff83ec53)   
+
+![image](https://github.com/user-attachments/assets/2e9b836f-daed-4dfa-ad1a-c8baff6f19c7)    
+
+图20应该就是一些notation的问题。 左边的可以简化成右边的，P是pulse输出，Q是进过3级同步器（两级+脉冲发生器的一级）的输出。这个输出的Q还可以作为反馈信号给信号发出的时钟域。    
+
+### MCP closed-loop
 
 
 

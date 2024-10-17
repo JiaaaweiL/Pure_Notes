@@ -19,6 +19,8 @@ UTMI+ PHY Core：
 这个核心负责处理物理层的操作，例如信号调节和恢复。它包括对差分信号的处理、编码和解码等。这个部分是直接与模拟电路相关的，你的教授提到的“模拟部分”可能就是指这部分。   
 
 
+[PROTOCAL]https://www.beyondlogic.org/usbnutshell/usb1.shtml
+[ULPI interface]https://www.sparkfun.com/datasheets/Components/SMD/ULPI_v1_1.pdf
 
 
 

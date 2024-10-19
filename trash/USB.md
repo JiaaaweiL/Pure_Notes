@@ -30,4 +30,7 @@ ULPI 定义了两种命令字节：
 Transmit Command Byte (TX CMD)：链路发起的命令，传输到 PHY。   
 Receive Command Byte (RX CMD)：PHY 发起的命令，接收自链路。（我们想要键盘写入内存，所以只照顾PHY发起的命令）    
 ![image](https://github.com/user-attachments/assets/db15a330-d7d0-4d6d-be82-fe734e86a01a)     
+什么时候发送RX? 参照下图。 nxt 和stp都是0，因为是CMD命令。   
+![image](https://github.com/user-attachments/assets/49962bd7-4cde-4f42-80f2-80bcc4883902)
+
 

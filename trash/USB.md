@@ -22,6 +22,12 @@ UTMI+ PHY Core：
 [PROTOCAL]https://www.beyondlogic.org/usbnutshell/usb1.shtml    
 [ULPI interface]https://www.sparkfun.com/datasheets/Components/SMD/ULPI_v1_1.pdf
 
-
-
+## ULPI
+一堆接口， 1bit 的clock， 8bit的data， 1bit的dir， 1bit的stp， 1bit的nxt；      
+data是双向接口，dir是phy控制的单向接口，dir = 0表示数据从链路到phy，dir = 1则表示数据从phy到链路。     
+stp信号是单向，用于表示数据包传输结束，nxt信号表示下一字节是否准备好传输。   
+ULPI 定义了两种命令字节：    
+Transmit Command Byte (TX CMD)：链路发起的命令，传输到 PHY。   
+Receive Command Byte (RX CMD)：PHY 发起的命令，接收自链路。（我们想要键盘写入内存，所以只照顾PHY发起的命令）    
+![image](https://github.com/user-attachments/assets/db15a330-d7d0-4d6d-be82-fe734e86a01a)     
 

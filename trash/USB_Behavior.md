@@ -59,6 +59,9 @@
 - **device需要发送的包裹只有PID， DATA 和CRC16** CRC16是python自动生成的，我不需要管
 - PID是Data0 和Data1的**不确定** data 1 个byte大小， CRC 16 python自己生成
 
+2个事！！！Data0 和 Data1 是什么回事，然后 Data 包裹的大小还有内容
+
+
 3. 主机向从机发送ACT包裹。 
 - 包裹的格式是：Sync	PID  EOP
 - **PID的值是 0010 1101**

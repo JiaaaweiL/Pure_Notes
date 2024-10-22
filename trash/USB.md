@@ -1,3 +1,9 @@
+
+## 搞清楚 ULPI 里面的turn around， nxt 和 stp 还有dir在做什么东西
+他们之间有什么关系
+End of pack 和 sync 在USB 里面怎么搞，是由PHY出去的吗？
+
+
 # 记载一点关于USB的东西。
 ![image](https://github.com/user-attachments/assets/a61b4da1-8b0a-497c-afb1-5008269e76c1)   
 

@@ -1,1 +1,22 @@
+# Behavior
+
+1. USB Host发送一个包裹给USB divice， 这个是一个SET-UP address
+- 包裹的格式是： Sync  PID  ADDR  ENDP  CRC5  EOP
+- **host 需要发送的数据包只有 PID(8bit， 正反PID） ADDR（7bit） + ENDP（4 bit） + CRC5(5 bit)** Sync + EOP(先不管) 应该是physical做的事情
+- PID是 1101 0010  ADDR 的设置是 000 0000 endpoint的设置是 0000 CRC5交给python做，我不管
+
+
+2. 第二部是送 control data packet。 这是一个config
+- 包裹的格式是Sync  PID  Data	CRC16   EOP
+- **host 需要发送的数据包只有PID(1Byte)， DATA(8byte) 跟CRC16(2byte)**
+- PID是data0， 所以pid的值是0011 1100（表示data0） DATA的值BM-request type是（1byte 0x00）， bRequest是（0x05）， wValue是0x0001（2byte）	，wIndex 是0x0000， wLength是0x0000， CRC16 python自己管
+
+
+3. 我们期望一个Ack从device到Host的。 
+
+
+
+
+
+
 

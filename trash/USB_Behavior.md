@@ -48,7 +48,27 @@
 - **PID的值是 0010 1101**
 
 
-## 之后是接受来自键盘的指令
+## 之后是接受来自键盘的指令 做Interrupt transfer
+1. 主机发送一个INTOKEN 包给device， 检查设备是否有值向传给主机
+- 包裹的格式是： Sync  PID  ADDR  ENDP  CRC5  EOP
+- **host 需要发送的数据包只有 PID(8bit， 正反PID） ADDR（7bit） + ENDP（4 bit） + CRC5(5 bit)** Sync + EOP(先不管) 应该是physical做的事情
+- PID是 1001 0110(In token）  ADDR 的设置是 000 0001 endpoint的设置是 0001（**这里是1， 因为0是用来setup的**) CRC5交给python做，我不管
+
+2. 从机向主机发送DATA包，
+- 包裹的格式是： Sync  PID  DATA  CRC16  EOP
+- **device需要发送的包裹只有PID， DATA 和CRC16** CRC16是python自动生成的，我不需要管
+- PID是Data0 和Data1的**不确定** data 1 个byte大小， CRC 16 python自己生成
+
+3. 主机向从机发送ACT包裹。 
+- 包裹的格式是：Sync	PID  EOP
+- **PID的值是 0010 1101**
+- **如果收到的值不是 0010 1101，就直接返回IDLE，所有重新跑 
+
+以此类推... 跑到断电
+
+
+
+
 
 
 

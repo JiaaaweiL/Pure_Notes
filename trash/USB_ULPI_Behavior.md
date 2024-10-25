@@ -19,7 +19,9 @@
 然后开始接收ctrl data。同样的道理， 首先先期望接收带PID的TX CMD. dir = 0; 收到TX CMD之后 nxt置位1 **nxt = 1，表示PHY已经准备好接收包裹。**  一直接收，直到遇到了stp，然后NXT置0；    
 ![image](https://github.com/user-attachments/assets/14629dfd-5619-4ef1-8c5e-35d65d910d46)   
 
-发送完包裹之后，主机期望device发送一个receive的ACK给从机，第一拍 DIR置1，Nxt置位0，      
+发送完包裹之后，主机期望device发送一个receive的ACK给从机，     
+![image](https://github.com/user-attachments/assets/353221ff-7614-4b8b-a4a5-dfa3bdcb3f97)      
+第一拍 DIR置1，Nxt置位0，      
 第二拍子 NXT置位1， Data发送一个ACK包，     
 第三拍子 NXT置位0， Dir置位0，     
 

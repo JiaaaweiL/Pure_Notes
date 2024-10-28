@@ -1,5 +1,6 @@
-### 核心目的： Software defined networking 和 software defined flash是两个完全分离的系统。但是这两层软件栈中间没有任何交流，损失了一些性能。  
-- 三点改进
+**核心目的： Software defined networking 和 software defined flash是两个完全分离的系统。但是这两层软件栈中间没有任何交流，损失了一些性能。**  
+
+### 三点改进: 
 
 **协调的I/O调度（Coordinated I/O Scheduling）：**     
 作用：在存储栈中动态调整I/O调度，基于对网络延迟的测量和预测，以实现网络和存储栈的I/O调度协调。   

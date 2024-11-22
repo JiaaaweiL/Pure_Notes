@@ -26,26 +26,28 @@ public:
 
 
 ```cpp
-if (x < 0) {
+class Solution {
+public:
+    bool isPalindrome(int x) {
+        if (x < 0) {
             return false;
         }
 
-        // 将整数转换为字符串
         string str = to_string(x);
 
-        // 初始化左右指针
         int left = 0;
-        int right = str.size() - 1;
+        int right = str.size()-1;
 
-        // 双指针比较
-        while (left < right) {
-            if (str[left] != str[right]) {
-                return false; // 如果不相等，不是回文
+
+        while(left < right){
+            if(str[left] != str[right]){
+                return false;
             }
-            left++;  // 左指针右移
-            right--; // 右指针左移
+            left ++;
+            right --;
         }
-
         return true;
+    }
+};
 
 ```

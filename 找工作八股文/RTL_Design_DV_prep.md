@@ -76,7 +76,7 @@ Unified cache的好处： Dynamic sharing of cache space -> better overall cache
 Instruction and data are accessed in diffierent place. Placement will be a problem(where to place for both fast access?)    
 
 
-## Cache 的总体设计和考量：
+### Cache 的总体设计和考量：
 
 **First-Level Cache**   
 Small， lower associativity， latency is critical   
@@ -92,4 +92,5 @@ Inclusive：里层的缓存的内容必然包含在外层缓存中：简化了�
 Exclusive：里层的缓存不存在于外层缓存中：优化了缓存利用率
 
 
-### Virtual Memory
+## Virtual Memory
+The benefit of Virtual Memory: Protect and sharing, and also simplifies the programming

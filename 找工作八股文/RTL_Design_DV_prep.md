@@ -22,4 +22,5 @@ Pipeline的坏处：
 
 - 基于局部历史的分支预测 local branch history
 
-用一个branch history register hold下历史的分支数据，然后用这个历史状态来index saturating counter
+基本做法是用一个branch history register hold下历史的分支数据，然后用这个历史状态来index saturating counter  
+改进1是不可能为每一个分支指令配2一个BHR和PHT，因此是用PC的一部分来寻址PHT，相当于一部分PC要共用一个BRH。

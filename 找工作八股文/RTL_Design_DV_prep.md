@@ -15,3 +15,11 @@ Pipeline的坏处：
 - A deeper pipeline will increase the power and area (more stage means more Dff), and the design complexity increase.
 
 ### Branch predictor/BTB 设计
+- 最简单的 bimodal predictor
+
+用pc的部分值去index一个saturating counter 最简单的做法，但是会被aliasing 困扰（两个不同的pc index 到同一个saturating counter，但是branch的方向不同，造成永远不饱和，叫destructive aliasing） 
+变体之一是用哈希代替直接从PC中间取值 可以减少这种情况。  
+
+- 基于局部历史的分支预测 local branch history
+
+用一个branch history register hold下历史的分支数据，然后用这个历史状态来index saturating counter

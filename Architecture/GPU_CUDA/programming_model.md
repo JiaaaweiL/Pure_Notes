@@ -20,6 +20,22 @@ dim3 grid  ((nElem+block.x-1)/block.x); //floor division, (6+3-1)/3 = 2 block, e
 对于block dimision，需要考虑kernel的性能，和GPU硬件的影响。      
 **自己的理解： 因为一个kernel所启动的线程都放在一个grid中，所以我们不能选择有几个grid，只能选择grid中有几个block，以及block有几个thread**   
 
+![image](https://github.com/user-attachments/assets/56d9033b-9148-4fa7-aeac-9f6f7298a13d)
 
+### Debug
+其实不好debug，因为永远是asynchronous调用，错都不知道错哪里，不过可以用如下的宏  
+```cpp
+#define CHECK(call)                                                       \
+ {                                                                         \
+   const cudaError_t error = call;                                        \
+   if (error != cudaSuccess)                                              \
+   {                                                                      \
+      printf("Error: %s:%d, ", __FILE__, __LINE__);                       \
+      printf("code:%d, reason: %s\n", error, cudaGetErrorString(error));  \
+      exit(1);                                                            \
+   }                                                                      \
+ }
+```  
+像这样调用： CHECK(cudaMemcpy(d_C, gpuRef, nBytes, cudaMemcpyHostToDevice));
 
 

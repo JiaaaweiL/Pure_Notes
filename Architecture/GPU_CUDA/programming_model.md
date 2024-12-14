@@ -16,7 +16,7 @@ dim3 block (3);
 dim3 grid  ((nElem+block.x-1)/block.x); //floor division, (6+3-1)/3 = 2 block, each block contains 3thread, total 6 thread   
 //最后一行这玩意相当于向上取整   
 ```   
-对于一个dataset，一般的步骤是：先决定grid dimision 和block dimision，然后决定block size，然后再基于data size和block size决定grid dimision。      
+对于一个dataset，一般的步骤是：决定grid dimision 和block dimision。先决定block size，然后再基于data size和block size决定grid dimision。      
 对于block dimision，需要考虑kernel的性能，和GPU硬件的影响。      
 **自己的理解： 因为一个kernel所启动的线程都放在一个grid中，所以我们不能选择有几个grid，只能选择grid中有几个block，以及block有几个thread**   
 
@@ -38,4 +38,18 @@ dim3 grid  ((nElem+block.x-1)/block.x); //floor division, (6+3-1)/3 = 2 block, e
 ```  
 像这样调用： CHECK(cudaMemcpy(d_C, gpuRef, nBytes, cudaMemcpyHostToDevice));
 
+### Index Matrix with Blocks and Threads
+第一种：2D的index： the matrix size is nx * ny, each thread doing one add.    
+ix = threadIdx.x + blockIdx.x * blockDim.x  
+iy = threadIdx.y + blockIdx.y * blockDim.y;  
+idx = iy * nx + ix;  
+![image](https://github.com/user-attachments/assets/986a2be0-bb95-4469-8404-2568cf216e17)   
+
+例子：假设我们有8*6的矩阵，48个元素相加
+我们先决定block size，每个block size 包含8个thread，即：4*2，于是乎，blockDim.x是4， blockDim.y = 2,
+然后我们这个grid就需要x轴上2个block， y轴上3个，所以一共是6个block。
+![image](https://github.com/user-attachments/assets/97df7a38-f745-4335-8464-e2b45700a0ce)
+
+例子2：nx ny都是2<<14, 即16384*16384个元素
+有三种
 

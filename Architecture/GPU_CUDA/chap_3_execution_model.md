@@ -26,8 +26,8 @@ Thread block中的Warp可以被schedule in any order. 激活的warp取决于SM�
     
   
 ### Fermi 架构以及执行模型
-Fermi一共有512个CUDA core，每一个cuda core有pipelined的int ALU 和FPU（floating point unit），可以每周期执行一个整数或者浮点数。 512个CUDA core被组合成16个SM，每个SM有32个CUDAcore. 用PCIE和CPU相连，然后用GigaThread Engine负责Thread block到SM的分配。thread block里面的thread到warp的组合是线性的：theadid0~31是warp0， 32~63是warp1，以此类推。一个SM有两个warp scheduler和两个instruction dispatch unit。当一个thread block被指定到SM之后，两个warp scheduler选择两个warp，然后各发射一个指令去SM的一半的CUDA core。Fermi的一个SM可以同时处理48个warp，总共1536个thread（48*32=1536）。    
-**因为每一个threadblock中的指令都是开始于同一个PC地址，所以所谓的，选择一条指令执行，其实是执行了整个warp，每一个thread的一条指令，也就是共计32条指令。** 其实是以warp为单位的交织执行，所以也就印证了上面说的：warp切换几乎没有开销，因为要藏延迟。    
+Fermi一共有512个CUDA core，每一个cuda core有pipelined的int ALU 和FPU（floating point unit），可以每周期执行一个整数或者浮点数。 512个CUDA core被组合成16个SM，每个SM有32个CUDAcore. 用PCIE和CPU相连，然后用GigaThread Engine负责Thread block到SM的分配。thread block里面的thread到warp的组合是线性的：theadid 0到31是warp0， 32到63是warp1，以此类推。一个SM有两个warp scheduler和两个instruction dispatch unit。当一个thread block被指定到SM之后，两个warp scheduler选择两个warp，然后各发射一个指令去SM的一半的CUDA core。Fermi的一个SM可以同时处理48个warp，总共1536个thread（48*32=1536）。    
+**因为每一个threadblock中的指令都是开始于同一个PC地址，所以所谓的，选择一条指令执行，其实是执行了整个warp，每一个thread的一条指令，也就是共计32条指令。** 其实是以warp为单位的交织执行，所以也就印证了上面说的：warp切换几乎没有开销，因为要藏延迟。      
 
 
 

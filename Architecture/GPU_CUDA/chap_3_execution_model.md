@@ -30,5 +30,25 @@ Fermi一共有512个CUDA core，每一个cuda core有pipelined的int ALU 和FPU�
 **因为每一个threadblock中的指令都是开始于同一个PC地址，所以所谓的，选择一条指令执行，其实是执行了整个warp，每一个thread的一条指令，也就是共计32条指令。** 其实是以warp为单位的交织执行，所以也就印证了上面说的：warp切换几乎没有开销，因为要藏延迟。      
 
 ![image](https://github.com/user-attachments/assets/5b961ebe-8a9d-46dd-8c7b-6106d02ac1d8)   
-  
 
+### warp divergence
+当一个warp内的指令有if-else分支，从而，一个warp内的指令在两条path上，就叫做有warp divergence。   
+推测是硬件行为， Warp 内线程的执行路径取决于运行时输入数据， Execution Mask： 硬件为 warp 内的每个线程维护一个执行掩码，用于标记哪些线程当前需要执行。  
+当发生 warp divergence 时，硬件会分组执行不同的分支，每次激活一个子组的线程，同时禁用其他线程。  
+```cpp
+ __global__ void mathKernel2(void) {
+   int tid = blockIdx.x * blockDim.x + threadIdx.x;
+   float a, b;
+   a = b = 0.0f;
+   if ((tid / warpSize) % 2 == 0) {
+      a = 100.0f;
+   } else {
+      b = 200.0f;
+   }
+   c[tid] = a + b;
+ }
+```
+这里就没有 warp divergence，因为线程是以warp为粒度分叉的  如果改成，比如if (tid % 2 == 0) 就有问题了  Cuda编译器也有优化，例如替换成 x = y? a:b; 的形式  
+
+### resource partitioning
+一个SM里面能够同时容纳的thread block 取决于kernel需要的寄存器数量和shared memory数量。如果每一个thread需要很多的寄存器，SM能容纳的warp更少。如果可以减少kernel消耗的寄存器数量，则可以让更多的warp留下。 

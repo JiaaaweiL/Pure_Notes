@@ -50,6 +50,31 @@ idx = iy * nx + ix;
 然后我们这个grid就需要x轴上2个block， y轴上3个，所以一共是6个block。
 ![image](https://github.com/user-attachments/assets/97df7a38-f745-4335-8464-e2b45700a0ce)
 
-例子2：nx ny都是2<<14, 即16384*16384个元素
-有三种
+例子2：nx ny都是2<<14, 即16384*16384个元素  
+有三种 lunch：  
+sumMatrixOnGPU2D <<<(512,512), (32,32)>>> elapsed 0.060323 sec     
+sumMatrixOnGPU2D <<<(512,1024), (32,16)>>> elapsed 0.038041 sec 比第一种好，因为直觉是两倍的block size，所以更多的并行        
+sumMatrixOnGPU2D <<<  (1024,1024), (16,16)  >>> elapsed 0.045535 sec 所以更多的 并行不一定会带来性能的提升   
+
+第二种，用以为的gird和block来处理二维的Matrix nx ny都是2<<14, 即16384*16384个元素    
+```cpp
+__global__ void sumMatrixOnGPU1D(float *MatA, float *MatB, float *MatC, 
+      int nx, int ny) {
+   unsigned int ix = threadIdx.x + blockIdx.x * blockDim.x;
+   if (ix < nx ) {
+      for (int iy=0; iy<ny; iy++) {
+         int idx = iy*nx + ix;
+         MatC[idx] = MatA[idx] + MatB[idx];
+      }
+   }
+ }
+sumMatrixOnGPU1D <<<(512,1), (32,1)>>> elapsed 0.061352 sec
+``` 
+上面的代码会generate 512个block，每一个block有31个thread，所以一共有即16384 个thread。   
+可以看到，每一个thread负责的是 一列（row）的元素，也就是16384个元素。矩阵的存储应该是row domain   
+换一种方法：我们有： 
+sumMatrixOnGPU1D <<<(128,1),(128,1)>>> elapsed 0.044701 sec   
+ ➤ Changing execution confi gurations affects performance.    
+ ➤ A naive kernel implementation does not generally yield the best performance.   
+ ➤ For a given kernel, trying different grid and block dimensions may yield better performance.   
 

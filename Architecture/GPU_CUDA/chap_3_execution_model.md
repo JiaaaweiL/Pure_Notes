@@ -52,3 +52,9 @@ Fermi一共有512个CUDA core，每一个cuda core有pipelined的int ALU 和FPU�
 
 ### resource partitioning
 一个SM里面能够同时容纳的thread block 取决于kernel需要的寄存器数量和shared memory数量。如果每一个thread需要很多的寄存器，SM能容纳的warp更少。如果可以减少kernel消耗的寄存器数量，则可以让更多的warp留下。 
+In order to maximize GPU utilization, you need to maximize the number of active warps
+
+
+
+
+

@@ -52,8 +52,27 @@ Fermi一共有512个CUDA core，每一个cuda core有pipelined的int ALU 和FPU�
 
 ### resource partitioning
 一个SM里面能够同时容纳的thread block 取决于kernel需要的寄存器数量和shared memory数量。如果每一个thread需要很多的寄存器，SM能容纳的warp更少。如果可以减少kernel消耗的寄存器数量，则可以让更多的warp留下。 
-In order to maximize GPU utilization, you need to maximize the number of active warps
+**In order to maximize GPU utilization, you need to maximize the number of active warps**    
+Number of Required Warps = Latency * throughput; 假设需要6个warp through put per cycle, 每一个warp塞进去要过5cc才会available，就需要30 = 5*6 个warp去填满latency；   
+![image](https://github.com/user-attachments/assets/25b95e5c-cff7-460f-8093-b1da51c42d36)   
+上面的的表格是对于full arithmetic operation而言的。   
+下面是对于memory utilization的   
+![image](https://github.com/user-attachments/assets/1838b002-0708-4881-a715-5a967114649d)    
+92是 144GB/sec 除以 1.566GHz =92Bytes/sec。 memory latency 是800个CC，也就是说，至少保持800 * 92 Byte/CC = 74KB的请求在排队，才能吃满所有带宽（最大化带宽利用）。   
+假设每个thread正在执行4Byte的daa movement，74KB/4BperThread = 18,500 Thread, 18500/32Thread per warp = 579 warp 来吃满带宽。    
+Fermi有16个SM，也就是需要579warp / 16 = 36 warp per SM来吃满带宽。 32*32 - 1024， 也就是说如果每个thread只吃4byte，永远吃不满。   
 
+### Occupancy
+Occupancy 越高，意味着越多 warp 正在被硬件并发处理，越有可能达到 GPU 的理论性能。 occupancy = active warp/ maximum warps   
+ ➤ Small thread blocks: Too few threads per block leads to hardware limits on the number of warps per SM to be reached before all resources are fully utilized.   
+ ➤ Large thread blocks: Too many threads per block leads to fewer per-SM hardware resources available to each thread.   
+假设有一大堆thread，当然可以有很多block，很多warp吃满所有SM上的资源。假设有限，则分情况讨论：如果是计算密集型，则集中于吃满少量的SM。如果是存储密集，则吃满所有的SM，充分的利用SM内部的资源。 （待讨论）  
+
+### Synchoronization
+- System Level： host会在launch kernel之后返回控制权，device和host之间是完全异步的，所以会有cudaDeviceSynchronize() lai wait until all cuda operation have completed.
+- Block Level： block local barrier for all the thead within the block
+
+There is no block to block synchoronization!
 
 
 

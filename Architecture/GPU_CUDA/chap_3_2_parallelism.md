@@ -38,3 +38,27 @@ $ nvprof --metrics gld_efficiency ./sumMatrix 16 16
 - The fourth case has the highest achieved occupancy, but it is not the fastest; therefore, a higher occupancy does not always equate to higher performance. There must be other factors that restrict performance.
 
 第三组数据和第四组数据：load多不一定好，还要看load efficiency：request global load throughput/required global load throughput。
+
+### Avoiding Branch Divergence
+
+
+
+
+
+
+### Dynamic Parallelism
+核函数可以在 GPU 内部调用另一个核函数，实现嵌套执行（Nested Execution）。父核函数（Parent）启动子核函数（Child），无需主机端（CPU）干预。    
+父网格（Parent Grid）：由主机启动， 子网格（Child Grid）：由父网格的线程动态启动。  
+执行规则：  
+父网格必须等待所有子网格执行完毕后才能完成。  
+线程块的执行也不算完成，直到所有线程启动的子网格都完成。  
+如果线程没有显式同步，CUDA 运行时会隐式同步，保证所有子网格执行完毕  
+
+共享全局内存和常量内存：  
+父网格和子网格共享同一个 全局内存 和 常量内存。   
+局部内存和共享内存是独立的：父子网格的局部内存和共享内存彼此隔离。  
+内存一致性保证：在两个时间点保证内存视图一致：子网格启动时：父线程的全局内存操作对子网格可见，子网格完成时：子网格的全局内存操作对子线程可见，但需要显式同步   
+
+
+
+

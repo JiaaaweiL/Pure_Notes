@@ -128,14 +128,44 @@ Solution Example: First Level page table must be in the physical memory. Only th
 ![image](https://github.com/user-attachments/assets/ad0c9b6d-8969-472f-946b-cad811d5e3af)        
 **Issue2:** Each instruction fetch or load/store requires at least two memory accesses, The number of memory accesses increases with a multi-level page table. **Solution** Cache the Page Table Entries (PTEs) in a hardware structure in the processor to speed up address translation. The cache of PTE is called TLB. Translation look-aside buffer        
 Small Cache of most recently used VA to PA translation. Small: few cycle latency, typically 16 - 512 entries at level 1(这tm个TLB还做multi level cache？没必要吧？) Usually high associativity,  >= 90-99% hit rate typically. Reduce the memory access for most instruction fetches and LD/SD to only one TLB access.      
-![image](https://github.com/user-attachments/assets/898f8b0a-507f-4f20-928b-0e1c5100a431)      
-![image](https://github.com/user-attachments/assets/20a788d3-ffe9-4ee8-951a-c87018bfccf9)   
-![image](https://github.com/user-attachments/assets/f5c40524-c440-4bb9-980f-25bcbafe0264)
+![image](https://github.com/user-attachments/assets/c17a6c8a-0a56-4751-a843-6c8ff8c3a3cd)        
+![image](https://github.com/user-attachments/assets/f5c06033-2f7b-4ca7-975b-b433badcfb9e)         
+![image](https://github.com/user-attachments/assets/d6e666eb-3146-4d6a-8584-973dd306e538)      
+![image](https://github.com/user-attachments/assets/82190cdb-b8cc-40d4-a2ca-d30037ba8788)    
+
+### What should be done on a TLB miss? What TLB entry to replace? Who handles the TLB miss? HW or SW?
+TLB is small, when there is a TLB miss, must access memory to find the required PTE; called walking the page table, cause large performance penalty. (can be improved by better TLB management and TLB prefetching.)    
+
+**1. Hardware Page Walk**  Hardware fetches the PTE and insert it into the TLB(if full, evict another entry), and do it **transparently to system software**. 处理速度快，因为完全由硬件完成，无需中断软件, 软件只会认为这条指令处理时间长/stall了。      
+
+**2. Software Page Walk** The hardware raises an exception and the operating system does the page walk The operating system fetches the PTE and the operating system inserts/evicts entries in the TLB. 处理速度慢，理解成：hang了当前的process，切换成一个新的 exception handle的process来处理，处理完之后恢复被挂起的process    
+  
+![image](https://github.com/user-attachments/assets/05039a13-212c-4fbc-8226-0e9aa558cad0)   
+
+### What should be done on a page fault?
+Page Fault 发生的原因是程序访问的页面在磁盘而不在内存中。
+检查页面有效性（最后一级页表的指示位，指示这个东西是在磁盘里还是在内存里）、从磁盘加载页面、更新页表和 TLB、恢复程序执行。
+Page Fault 是虚拟内存管理的一部分，用于按需加载页面和支持页面置换，节省内存资源。
+
+### Protection   
+Not every process is allowed to access every page; the Supervisor can access the system page, user may not be able to access the instructions on some pages.    
+**Idea:** Store access control information on a page basis in the process’s page table   
+
+**Address Translation and caching**
+What are the issue with a virtually addressed cache? Synonym Problem and Homonym problem:  
+**Synonym Problem:** Two different virtual addresses can map to the same physical address -> same physical address can be present in multiple locations in the cache -> can lead to inconsistency in data
 
 
 
 
 
+### Summary
+Virtual memory gives the illusion of “infinite” capacity 
+A subset of virtual pages are located in physical memory
+A page table maps virtual pages to physical pages – this is called address translation
+A TLB speeds up address translation
+Multi-level page tables keep the page table size in check
+Using different page tables for different programs provides memory protection
 
 
 

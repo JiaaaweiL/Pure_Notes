@@ -85,4 +85,22 @@ int main() {
     return 0;
 }
 ```
+静态成员变量属于类本身，和具体的对象无关，因此普通方法可以直接通过类名访问静态成员变量。 普通方法拥有 this 指针，也可以通过 this-> 间接访问静态成员。
+```cpp
+class MyClass {
+public:
+    static int count; // 静态成员变量
+    void increment() {
+        count++; // 普通方法直接访问静态变量
+    }
+};
+int MyClass::count = 0;
+int main() {
+    MyClass obj1, obj2;
+    obj1.increment();
+    obj2.increment();
+    std::cout << MyClass::count << std::endl; // 输出: 2
+    return 0;
+}
 
+```

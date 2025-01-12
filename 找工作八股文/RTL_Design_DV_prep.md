@@ -149,21 +149,21 @@ Page Fault 是虚拟内存管理的一部分，用于按需加载页面和支持
 
 
 ### 历史老大难：
-**Address Translation and caching**
-What are the issue with a virtually addressed cache? Synonym Problem and Homonym problem:  
-**Synonym Problem:** Two different virtual addresses can map to the same physical address -> same physical address can be present in multiple locations in the cache -> can lead to inconsistency in data
-**Hononym**One virtual address can map to different physical address
-**出现这种问题的真实原因： page offset < set + block size;**
-VA -> PA 的翻译规则是： Offset不变，VPN 被页表翻译成了PPN
-缓存访问的规则是： 用set去找到对应的entry，然后对比tag，block offset直接去cache line里面找值。
-如果page offset的值 小于set + block size，一些set bit就会参与进VPN，如果 cache 的索引位完全或部分落在了「VPN」所在的 bits 里，那么 VA1 和 VA2 可能索引到不同的缓存 set。从而干扰结果的PPN，造成synonym问题：即，多个VA可以映射到一个PA。
-Hononym问题不是由 page offset < set + block size 引起的， 而是：一个VA在不同的Context中能map到不同的PA。如果无法区分上下文，就造成错误的映射。解决Hononym问题的核心是：绑定ASID/PID或者在上下文切换的时候flush掉TLB。  
-VIPT之所以得到并行的还有一个前提条件是：当VPN正在被翻译成PPN时，能用set + block offset找出所有的值，然后用翻译过后的PPN和这些tag进行对比，从而找出正确的值。
+**Address Translation and caching**  
+What are the issue with a virtually addressed cache? Synonym Problem and Homonym problem:    
+**Synonym Problem:** Two different virtual addresses can map to the same physical address -> same physical address can be present in multiple locations in the cache -> can lead to inconsistency in data   
+**Hononym**One virtual address can map to different physical address   
+**出现这种问题的真实原因： page offset < set + block size;**     
+VA -> PA 的翻译规则是： Offset不变，VPN 被页表翻译成了PPN   
+缓存访问的规则是： 用set去找到对应的entry，然后对比tag，block offset直接去cache line里面找值。   
+如果page offset的值 小于set + block size，一些set bit就会参与进VPN，如果 cache 的索引位完全或部分落在了「VPN」所在的 bits 里，那么 VA1 和 VA2 可能索引到不同的缓存 set。从而干扰结果的PPN，造成synonym问题：即，多个VA可以映射到一个PA。   
+Hononym问题不是由 page offset < set + block size 引起的， 而是：一个VA在不同的Context中能map到不同的PA。如果无法区分上下文，就造成错误的映射。解决Hononym问题的核心是：绑定ASID/PID或者在上下文切换的时候flush掉TLB。     
+VIPT之所以得到并行的还有一个前提条件是：当VPN正在被翻译成PPN时，能用set + block offset找出所有的值，然后用翻译过后的PPN和这些tag进行对比，从而找出正确的值。    
 
 
 ### Protection   
-Not every process is allowed to access every page; the Supervisor can access the system page, user may not be able to access the instructions on some pages.    
-**Idea:** Store access control information on a page basis in the process’s page table   
+Not every process is allowed to access every page; the Supervisor can access the system page, user may not be able to access the instructions on some pages.     
+**Idea:** Store access control information on a page basis in the process’s page table      
 
 
 ### Summary

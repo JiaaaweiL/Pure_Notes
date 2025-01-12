@@ -93,4 +93,62 @@ Exclusive：里层的缓存不存在于外层缓存中：优化了缓存利用�
 
 
 ## Virtual Memory
-The benefit of Virtual Memory: Protect and sharing, and also simplifies the programming
+The benefit of Virtual Memory: Protect, sharing, isolation and also simplifies the programming model;  
+Virtual memory gives the illusion that the program owns the whole memory, and that the size of the memory is infinite. 
+Physical Memory存在的问题：   
+1. Limited size， 如果一个program needs more, what gonna happened? Should the programmer manage data movement form disk to the physical memory?   
+2. Multiple programs may need the physical memory. Should the programmer make sure all processes can fit in physical memory?
+3. Should the programmer ensure two processes do not unintentionally or incorrectly use the smae physical memory protion? 
+4. Should the programmer ensure two process do not incorrectly use the same physical memory address?
+
+**Difficulty of Physical Addressing:**  
+1. Programmer need to manage physical memory space
+2. Difficulty to support code and data relocation
+3. Difficulty in supporting multiple processes
+4. Difficulty in supporting data sharing across processes.
+
+**Virtual Memory**: Give each program the illusion of a large address space. So that the programmer does not need to worry about managing the physical memory, basic mechanisms including indirection and mapping, using address translation mechanism maps this address to a physical address.     
+
+**4 ISSUE**    
+1. When to map a virtual address to a physical address? Ans: When virtual address is first referenced by the program.      
+2. What is the granularity? Byte, KByte, GByte? Multiple granularity? Ans: 4KB(based on historical disk design)     
+3. Where and how to store the VA -> PA mapping? Ans: Memory, page table, SW/HW OR cooperative.     
+4. What to do when physical address space is full? Ans: Evict an unlikely-to-be-needed VM from physical memory.    
+
+Method: Page Table: Mapping VA to PA.   
+![image](https://github.com/user-attachments/assets/f1bd0015-abba-417e-a39f-8275191f3eb4)   
+![image](https://github.com/user-attachments/assets/74eed96a-d413-4b89-872d-416fd6a7f624)
+
+Page Table is located at physical memory address specified by the PTBR(Page Table Base Register).(CR3 in X86) We can access the PTE at address PTBR + VPN * PTE-size.      
+### Page Table Issue
+**Issue1 :** Page table is large, it will consume the memory space. **Solution:** Multi-level page table:  Organize page table in a hierarchical manner such that only a small first-level page table has to be in physical memory.    
+Issue Example:  4 byte/entry is just the assume.       
+![image](https://github.com/user-attachments/assets/f9a0df09-0212-4a10-8e00-33c763230df4)     
+Solution Example: First Level page table must be in the physical memory. Only the needed second level page table can be kept in the physical memory.    
+![image](https://github.com/user-attachments/assets/ad0c9b6d-8969-472f-946b-cad811d5e3af)        
+**Issue2:** Each instruction fetch or load/store requires at least two memory accesses, The number of memory accesses increases with a multi-level page table. **Solution** Cache the Page Table Entries (PTEs) in a hardware structure in the processor to speed up address translation. The cache of PTE is called TLB. Translation look-aside buffer        
+Small Cache of most recently used VA to PA translation. Small: few cycle latency, typically 16 - 512 entries at level 1(这tm个TLB还做multi level cache？没必要吧？) Usually high associativity,  >= 90-99% hit rate typically. Reduce the memory access for most instruction fetches and LD/SD to only one TLB access.      
+![image](https://github.com/user-attachments/assets/898f8b0a-507f-4f20-928b-0e1c5100a431)      
+![image](https://github.com/user-attachments/assets/20a788d3-ffe9-4ee8-951a-c87018bfccf9)   
+![image](https://github.com/user-attachments/assets/f5c40524-c440-4bb9-980f-25bcbafe0264)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

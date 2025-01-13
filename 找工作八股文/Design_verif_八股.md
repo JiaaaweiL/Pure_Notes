@@ -164,7 +164,7 @@ int main() {
 
 3. 多态Polymorphism 多态是指同一个接口可以表现出不同的行为，通常通过**函数重写Overriding和函数重载Overloading**实现    
 函数重写（Overriding）：     
-子类可以重写父类的方法，在运行时根据具体对象的类型调用相应的方法（即运行时多态）。使用**虚函数virtual**实现，基于动态绑定。
+子类可以重写父类的方法，在运行时根据具体对象的类型调用相应的方法（即运行时多态）。使用**虚函数virtual**实现，基于动态绑定。   
 ```cpp
 class Animal {
 public:
@@ -201,8 +201,8 @@ int main() {
     return 0;
 }
 ```
-函数重载（Overloading）：
-同名函数可以根据参数的不同（数量或类型）执行不同的行为（即编译时多态）。
+函数重载（Overloading）：    
+同名函数可以根据参数的不同（数量或类型）执行不同的行为（即编译时多态）。     
 ```cpp
 class Calculator {
 public:
@@ -223,6 +223,93 @@ int main() {
 }
 ```
 **总结**
-封装	    隐藏实现细节，仅暴露接口	    提高代码安全性和可维护性	用于保护敏感数据，如银行账户、用户密码管理等
-继承	    子类继承父类的属性和方法	    代码复用、减少重复代码、扩展功能	定义动物类的通用行为，子类实现具体行为
-多态	    同一接口表现出不同行为	    提高代码的灵活性和可扩展性	运行时根据类型选择调用函数，如画图工具支持不同形状绘制
+封装	    隐藏实现细节，仅暴露接口	    提高代码安全性和可维护性	用于保护敏感数据，如银行账户、用户密码管理等     
+继承	    子类继承父类的属性和方法	    代码复用、减少重复代码、扩展功能	定义动物类的通用行为，子类实现具体行为      
+多态	    同一接口表现出不同行为	    提高代码的灵活性和可扩展性	运行时根据类型选择调用函数，如画图工具支持不同形状绘制       
+
+### 6. private， public， protected 保护， friend function/friend class是啥
+在 C++ 中，private, public, protected 是三种访问控制修饰符，用于控制类的成员（变量和方法）对外部或子类的可见性。      
+**Private 访问权限：** 只能被**类本身的成员函数或 friend 函数/类访问**。 类外部和子类都无法直接访问。 用于实现数据隐藏（Encapsulation），保护敏感信息。        
+**Protected 访问权限：**类本身和**派生类（子类）** 可以访问。 类外部无法直接访问。 常见用途：用于父类和子类共享的成员，避免子类重复定义相同的成员。     
+**Public 访问权限：** 任何地方都可以访问，包括类外部和子类。常见用途：用于定义类对外提供的接口（如 getter 和 setter 方法）。      
+friend 的作用：应该不会考     
+friend 函数：一个被声明为 friend 的函数可以直接访问类的 private 和 protected 成员，即使它不属于这个类。 主要用于实现与类强相关的非成员函数。      
+friend 类：一个被声明为 friend 的类可以访问另一个类的所有 private 和 protected 成员。      
+
+### 7. downcast, upcast, static cast, dynamic cast 是什么？
+类型转换（Type Casting） 是一项重要的功能，用于在不同类型之间转换对象或指针。以下是 downcast、upcast、static_cast 和 dynamic_cast 的定义和用法：   
+**Upcast（向上转换）定义：** 将子类的指针或引用转换为父类的指针或引用。总是安全的，因为子类是父类的扩展，子类的对象可以被看作是父类的对象。通常用于多态场景，将派生类对象视为基类对象，以便通过基类接口访问派生类功能。     
+**downcast（向下转换）** 定义：将父类的指针或引用转换为子类的指针或引用。不总是安全，因为父类对象可能不包含子类特定的扩展部分。通常需要借助 dynamic_cast 检查转换的合法性。 当需要从父类中恢复出子类的特定功能时，进行向下转换。    
+```
+特性	    upcast	                downcast	                    static_cast	                dynamic_cast   
+定义	    子类 → 父类	                父类 → 子类	                    编译时类型转换	            运行时类型检查并转换   
+安全性	    总是安全	                不总是安全	                    编译时不检查转换的合法性	    提供运行时检查   
+用途	    访问基类的公共接口	        恢复子类特定的功能	            明确类型转换，无需动态检查	安全的向下转换（多态结构）   
+效率	    高效	                高效，但可能有风险	            高效，适合简单场景	        较慢（依赖运行时类型信息 RTTI）   
+限制	    无限制	                父类必须实际是子类类型的对象	    不能处理类型安全	            只适用于多态类    
+```
+
+
+
+
+### 8.shallow copy, deep copy
+![image](https://github.com/user-attachments/assets/1831c75d-e854-4c0e-b403-41551bf25912)   
+
+
+### 9. virtual function 和 static bind/dynamic bind
+Virtual Function（虚函数）     
+虚函数用于实现动态绑定（运行时多态），使得基类指针或引用可以调用子类重写的函数。     
+必须用 virtual 关键字声明。     
+Static Binding vs Dynamic Binding     
+静态绑定：在编译时决定，效率高，但不支持多态。     
+动态绑定：在运行时决定，支持多态，但性能略低。      
+```cpp
+class Base {
+public:
+    void nonVirtualFunc() { // 非虚函数
+        cout << "Base nonVirtualFunc()" << endl;
+    }
+
+    virtual void virtualFunc() { // 虚函数
+        cout << "Base virtualFunc()" << endl;
+    }
+};
+
+class Derived : public Base {
+public:
+    void nonVirtualFunc() { // 隐藏基类的非虚函数
+        cout << "Derived nonVirtualFunc()" << endl;
+    }
+
+    void virtualFunc() override { // 重写基类虚函数
+        cout << "Derived virtualFunc()" << endl;
+    }
+};
+
+int main() {
+    Base* basePtr = new Derived();
+
+    // 静态绑定
+    basePtr->nonVirtualFunc(); // 调用 Base 的非虚函数
+
+    // 动态绑定
+    basePtr->virtualFunc(); // 调用 Derived 的虚函数
+
+    delete basePtr;
+    return 0;
+}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+

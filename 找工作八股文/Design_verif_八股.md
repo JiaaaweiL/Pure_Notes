@@ -49,7 +49,7 @@ BSS 段Block Started by Symbol，包括未初始化的静态变量和全局变�
 堆段Heap Segment，包括动态分配的内存，从低地址开始向上增长；   
 文件映射段Memory-Mapped Segment，包括动态库、共享内存等，从低地址开始向上增长；    
 栈段Stack Segment，包括局部变量和函数调用的上下文等。栈的大小是固定的，一般是8MB，当然系统也提供了参数，以便我们自定义大小；    
-![image](https://github.com/user-attachments/assets/e9e96930-752d-409b-a82d-b0213cb88501)
+![image](https://github.com/user-attachments/assets/e9e96930-752d-409b-a82d-b0213cb88501)            
 **Q & A:** 
 - 为什么堆效率比栈低？ 堆需要动态分配和释放内存，涉及复杂的管理（如碎片整理），而栈只需调整栈指针，速度快。   
 - 全局变量存在哪里？已初始化的全局变量存储在初始化数据段；未初始化的存储在BSS段。   
@@ -137,13 +137,92 @@ int main() {
     return 0;
 }
 ```
-2. 继承（Inheritance） 通过继承，子类（派生类）可以继承父类（基类）的属性和方法，从而实现代码的复用和扩展。同时，子类可以新增自己的属性和方法，或者重写父类的方法。   
-代码复用：避免重复代码，子类可以直接复用父类的功能。     
+2. 继承（Inheritance） 通过继承，子类（派生类）可以继承父类（基类）的属性和方法，从而实现代码的复用和扩展。同时，子类可以新增自己的属性和方法，或者重写父类的方法。     
+代码复用：避免重复代码，子类可以直接复用父类的功能。继承是为了代码复用，同时为多态的实现打下基础。       
+```cpp
+class Animal {
+public:
+    void eat() {
+        cout << "Animal is eating." << endl;
+    }
+};
 
+class Dog : public Animal { // Dog 继承 Animal
+public:
+    void bark() {
+        cout << "Dog is barking." << endl;
+    }
+};
 
+int main() {
+    Dog dog;
+    dog.eat();  // 子类继承父类方法
+    dog.bark(); // 子类自己的方法
+    return 0;
+}
+```
 
+3. 多态Polymorphism 多态是指同一个接口可以表现出不同的行为，通常通过**函数重写Overriding和函数重载Overloading**实现    
+函数重写（Overriding）：     
+子类可以重写父类的方法，在运行时根据具体对象的类型调用相应的方法（即运行时多态）。使用**虚函数virtual**实现，基于动态绑定。
+```cpp
+class Animal {
+public:
+    virtual void makeSound() { // 父类中的虚函数
+        cout << "Animal makes sound." << endl;
+    }
+};
 
+class Dog : public Animal {
+public:
+    void makeSound() override { // 子类重写父类方法 也可以不写override
+        cout << "Dog barks." << endl;
+    }
+};
 
+class Cat : public Animal {
+public:
+    void makeSound() override {
+        cout << "Cat meows." << endl;
+    }
+};
 
+int main() {
+    Animal* animal;
+    Dog dog;
+    Cat cat;
 
+    animal = &dog;
+    animal->makeSound(); // 输出: Dog barks.
 
+    animal = &cat;
+    animal->makeSound(); // 输出: Cat meows.
+
+    return 0;
+}
+```
+函数重载（Overloading）：
+同名函数可以根据参数的不同（数量或类型）执行不同的行为（即编译时多态）。
+```cpp
+class Calculator {
+public:
+    int add(int a, int b) {
+        return a + b;
+    }
+
+    double add(double a, double b) {
+        return a + b;
+    }
+};
+
+int main() {
+    Calculator calc;
+    cout << calc.add(2, 3) << endl;       // 调用第一个 add，输出: 5
+    cout << calc.add(2.5, 3.5) << endl;   // 调用第二个 add，输出: 6
+    return 0;
+}
+```
+**总结**
+封装	    隐藏实现细节，仅暴露接口	    提高代码安全性和可维护性	用于保护敏感数据，如银行账户、用户密码管理等
+继承	    子类继承父类的属性和方法	    代码复用、减少重复代码、扩展功能	定义动物类的通用行为，子类实现具体行为
+多态	    同一接口表现出不同行为	    提高代码的灵活性和可扩展性	运行时根据类型选择调用函数，如画图工具支持不同形状绘制

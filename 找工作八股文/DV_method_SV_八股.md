@@ -1,1 +1,93 @@
 ### 1. functional coverage, code coverage 差异
+
+
+
+### 5. 写Constraint的题目
+1. constraint a var like randc without using randc keyword   
+首先，啥是rand，啥是randc 还有$urandom, $urandom_range, $random   
+rand 和randc 可以作为类内随机数。 rand 和 randc的区别就是rand是纯纯随机的，它不保证生成的值是非重复的，也不保证遍历所有可能值。randc每次调用 randomize()，randc 变量会生成一个新值，但不会重复之前生成过的值。当所有可能值都被生成后，它会重新开始遍历。保证遍历所有可能值，并且在每次循环内无重复。   
+如何不用randc写出一个像randc的随机数呢？用一个池子，放入所有数。每次从池里取值   
+```systemverilog
+class abc;
+  rand logic[2:0] a;
+  int saved[$];
+  
+  constraint c1 { !(a inside saved);}
+  
+  function void post_randomize();
+    saved.push_back(a);
+    if(saved.size == 2**3)begin
+      saved = {};
+    end 
+  endfunction
+  
+endclass
+
+module abc;
+  abc a1;
+  
+  initial begin
+    a1 = new();
+    repeat(8)begin
+    a1.randomize();
+    $display(a1.a);
+    end
+  end 
+endmodule
+```
+
+
+2. Constraint a var like unique without using unique keyword
+Unique的两种场景：  确保分支互斥 当 unique 关键字用于条件语句时，表示编译器/模拟器保证每个条件分支的条件互斥，即在任意时刻只有一个分支条件为真。如果多个分支条件可能同时为真，编译器会给出警告或报错。经典案例是Unique Case 只确保有一个case的分支是工作的，不能有两个case的分支同时工作
+```systemverilog
+class UniqueConstraintArray;
+  rand int values[3]; // 定义一个数组，包含3个随机变量
+
+  // 约束数组中所有元素互不相同
+  constraint unique_values {
+    foreach (values[i]) {
+      foreach (values[j]) {
+        if (i != j) values[i] != values[j];
+      }
+    }
+  }
+
+  // 显示生成的值
+  function void display();
+    $display("Values = %p", values);
+  endfunction
+endclass
+```
+
+3.  Constraint to check if a given sudoku is valid or not 约束解数独。这玩意太抽象了
+
+   
+5.  Constraint a 16 bit var has 2 bit '1'
+```systemverilog
+class TwoBitOnesConstraint;
+    rand bit [15:0] var; // 16位随机变量
+
+    // 约束：确保16位变量中恰好有2个'1'
+    constraint two_bit_ones {
+        $countones(var) == 2;
+    }
+    // 打印结果
+    function void display();
+        $display("var = %b (decimal: %0d)", var, var);
+    endfunction
+endclass
+```
+
+6. constraint 2 var that has 1 bit flipped 0 ->1
+```systemverilog
+ constraint one_bit_flip {
+        b & ~a == (b ^ a);          // b 中新增的位是翻转位
+        $countones(b & ~a) == 1;    // b 中比 a 多的位只有一个
+    }
+```
+b & ~a == (b ^ a)： 明确规定了 所有差异只能是 0 -> 1，而不能是其他变化（如 1 -> 0 或无效的状态）。       
+$countones(b & ~a) == 1：限制新增的 1 的个数（从 0 -> 1）。     
+
+
+
+

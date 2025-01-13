@@ -104,3 +104,46 @@ int main() {
 }
 
 ```
+
+### 5. OOP的三要素：封装（encapsulation）， 继承（Inheritance），多态（Polymorphism）
+1. 封装  将数据（变量）和操作数据的方法（函数）绑定在一起，通过访问权限控制（如 private, protected, public）对数据进行保护，避免直接访问或修改数据，从而提高代码的安全性和可维护性。     
+将类的内部实现隐藏，对外只暴露必要的接口。限制外部直接访问类的内部数据，必须通过公开的方法（如 getter 和 setter）访问或修改。提高了代码的安全性，防止数据被意外或非法修改。
+```cpp
+#include <iostream>
+using namespace std;
+
+class BankAccount {
+private:
+    double balance; // 私有变量，外部不能直接访问
+public:
+    // 构造函数
+    BankAccount(double initial_balance) : balance(initial_balance) {}
+
+    // 公有接口（getter）
+    double getBalance() const {
+        return balance;
+    }
+    // 公有接口（setter）
+    void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+        }
+    }
+};
+int main() {
+    BankAccount account(100.0); // 初始余额 100
+    account.deposit(50.0); // 存入 50
+    cout << "Current balance: " << account.getBalance() << endl; // 输出余额
+    return 0;
+}
+```
+2. 继承（Inheritance） 通过继承，子类（派生类）可以继承父类（基类）的属性和方法，从而实现代码的复用和扩展。同时，子类可以新增自己的属性和方法，或者重写父类的方法。   
+代码复用：避免重复代码，子类可以直接复用父类的功能。     
+
+
+
+
+
+
+
+

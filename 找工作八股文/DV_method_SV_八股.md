@@ -1,4 +1,27 @@
 ### 1. functional coverage, code coverage 差异
+这是对设计代码执行情况的统计分析。仿真工具可以自动生成代码覆盖率报告，评估测试用例是否遍历了代码中的所有语句、分支、条件等。代码覆盖率主要用于确保测试用例充分执行了设计的各个部分，但它无法直接反映设计功能的完整性。   
+
+功能覆盖率：这是根据设计规范，由验证人员手动定义的覆盖率指标。功能覆盖率关注设计的功能点（features），评估测试用例是否覆盖了所有预期的功能场景。这需要验证人员根据功能设计文档指定验证计划，编写功能覆盖率模型（如 covergroup、coverpoint 等），并通过仿真收集数据。功能覆盖率独立于实际的设计代码或其结构，更加关注设计的功能需求是否被充分验证。   
+
+### 2. assertion是什么
+断言： 是用于验证设计行为的语句，旨在确保设计按预期工作。断言可在仿真期间动态检查，也可通过形式验证工具静态验证。
+即时断言（Immediate Assertions）：这些断言是过程语句，主要用于仿真中即时检查特定条件。它们类似于 if 语句，但用于声明某个条件必须为真。如果条件为假，仿真器会生成错误消息。     
+```systemverilog
+assert (A == B) else $error("A 不等于 B");
+```
+并发断言（Concurrent Assertions）：这些断言用于检查随时间变化的设计行为，通常与时钟相关联。它们用于验证特定的时序关系或协议。   
+```systemverilog
+assert property (@(posedge clk) req |-> ##[1:2] ack);
+```
+此断言表示：在时钟上升沿，如果 req 为真，则在接下来的 1 到 2 个时钟周期内，ack 必须为真。
+验证设计行为：确保设计在各种条件下都能按预期运行。   
+提供功能覆盖信息：帮助衡量测试用例的有效性，确保所有预期的设计行为都被测试到。    
+辅助调试：在仿真过程中，当断言失败时，提供有价值的调试信息，帮助快速定位问题。    
+
+### 3. Constraint random, direct test 差在哪？
+![image](https://github.com/user-attachments/assets/c432efe8-d014-473b-993e-1ffa6e7c340e)
+
+
 
 ### 4. Fork join, join_any, join_none 
 ![image](https://github.com/user-attachments/assets/a5dcae6e-7662-4636-85eb-4c192c8d3368)      

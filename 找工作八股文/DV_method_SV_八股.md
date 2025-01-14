@@ -1,6 +1,67 @@
 ### 1. functional coverage, code coverage 差异
 
-
+### 4. Fork join, join_any, join_none 
+![image](https://github.com/user-attachments/assets/a5dcae6e-7662-4636-85eb-4c192c8d3368)      
+一道fork join的经典面试题：   
+现在有定义好的三个子线程do1,do2,do3，在task中并行运行这三个子线程，其中只要有任何一个线程结束，都退出并行运行块，并打印DONE。要求分别用fork-join、fork-join_any，fork-join_none来实现   
+```systemverilog
+//用fork  join实现
+task test();
+  fork : tag
+    begin
+      sub1();
+      disable tag;
+    end
+    begin
+      sub2();
+      disable tag;
+    end
+    begin
+      sub3();
+      disable tag;
+    end
+  join
+  $display("done");
+endtask : test
+//fork:tag 定义了一个并行运行块，并给它加了一个名字 tag
+//在任意一个线程完成时，执行 disable tag，立刻终止整个并行块 tag，从而停止其他线程
+//用fork  join_any实现
+task test();
+  fork:tag
+    sub1();
+    sub2();
+    sub3();
+  join_any
+  disable tag;
+  $display("done");
+endtask : test
+ 
+//用fork  join_none实现
+task test();
+  event e;
+  fork : tag
+    begin
+      sub1();
+      -> e;
+    end
+    begin
+      sub2();
+      -> e;
+    end
+    begin
+      sub3();
+      -> e;
+    end
+  join_none
+  @ e;
+  disable tag;
+  $display("done");
+endtask : test
+//join_none 表示立即返回，而不会等待任何线程完成。
+//使用 event e 和 -> e 机制：在线程完成时，触发事件 e。
+//主线程通过 @ e 语句等待某个线程触发事件。
+//一旦某个线程触发了事件 e，主线程执行 disable tag，中止其余线程。
+```
 
 ### 5. 写Constraint的题目
 1. constraint a var like randc without using randc keyword   

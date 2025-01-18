@@ -97,4 +97,11 @@ XOR:
 ![image](https://github.com/user-attachments/assets/67b44757-fbcd-4cfd-b1d0-0ce2da73f289)  
 ![image](https://github.com/user-attachments/assets/60f06b49-c8a7-4dba-ace9-587485ab92e4)   
 
+### 5. Arithmetic circuit: half adder full adder, 怎么只用FA算出一个7 bit input有几个1, carry ripple/carry lookahead/carry select adder, comparators, multiplier  
 
+![image](https://github.com/user-attachments/assets/6d0c7eff-4238-4329-8791-35a252a8b4c1)    
+![image](https://github.com/user-attachments/assets/a8da0a5d-bc8a-49cb-89c7-476fb54a3c79)    
+carry ripple adder
+![image](https://github.com/user-attachments/assets/f288ac45-22ae-43e7-b70d-d734e0c4aad0)   
+carry-look ahead adder
+![image](https://github.com/user-attachments/assets/4773178d-4123-4317-8688-f814ad7a15b9)

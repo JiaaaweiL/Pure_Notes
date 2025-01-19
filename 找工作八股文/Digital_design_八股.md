@@ -130,7 +130,8 @@ Edge Dector [https://www.chipverify.com/verilog/verilog-positive-edge-detector]
 ### 9. CDC 看自己的八股帖子
 
 ### 10. Asynch FIFO 看牛客和自己的八股帖子
-    补一个 算深度的问题； [https://hardwaregeeksblog.wordpress.com/wp-content/uploads/2016/12/fifodepthcalculationmadeeasy2.pdf]
+    补一个 算深度的问题
+    [https://hardwaregeeksblog.wordpress.com/wp-content/uploads/2016/12/fifodepthcalculationmadeeasy2.pdf]
 ### 11 Low Power Design 看自己的hw笔记
 
 ### 12. ASIC Design Flow

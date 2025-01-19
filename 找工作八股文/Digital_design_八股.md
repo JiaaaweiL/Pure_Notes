@@ -105,3 +105,32 @@ carry ripple adder
 ![image](https://github.com/user-attachments/assets/f288ac45-22ae-43e7-b70d-d734e0c4aad0)   
 carry-look ahead adder
 ![image](https://github.com/user-attachments/assets/4773178d-4123-4317-8688-f814ad7a15b9)
+
+
+### 6. 同步复位？异步复位？
+[https://www.cnblogs.com/lanlancky/p/17413824.html]
+
+### 7. 常见Verilog Code
+Fixed priority arbiter with decreasing priority from LSB to MSB [https://www.siliconcrafters.com/post/fixed-priority-arbiter       
+
+Round-Robin Arbiter[https://www.siliconcrafters.com/post/round-robin-arbiter]    
+
+FSM design of divisible 3[https://www.siliconcrafters.com/post/divisible-by-3-fsm-draw-an-fsm-to-check-if-a-number-is-divisible-by-3]  
+
+Clock Divider by 3, by N[https://www.mikrocontroller.net/attachment/177198/Clock_Dividers_Made_Easy.pdf]   
+
+序列检测看牛客吧      
+ 
+斐波那契数列检测     
+
+Edge Dector [https://www.chipverify.com/verilog/verilog-positive-edge-detector]     
+
+### 8. STA 看自己的八股帖子
+
+### 9. CDC 看自己的八股帖子
+
+### 10. Asynch FIFO 看牛客和自己的八股帖子
+
+### 11 Low Power Design 看自己的hw笔记
+
+### 12. ASIC Design Flow

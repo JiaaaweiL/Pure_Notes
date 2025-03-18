@@ -33,7 +33,7 @@ Tpcq = T propagation to q， Tccq = T contamination to q
 Tc > Tpcq + Tpd + Tsu + Tskew  => Tpd < Tc - Tpcq - Tskew - Tsu;     
 ![image](https://github.com/user-attachments/assets/4a847061-8112-4eef-b11f-9b9985cef0b6)   
 正常情况下是Tccq + Tcd > T hold; 可是如果CLK2 晚到了，相当于CLK1 提早开始，所以就变成了Tccq + Tcd > T hold + T skew;    
-变成了Tcd > T hold + Tskew + Tccq;   
+变成了Tcd > T hold + Tskew - Tccq;   
  
 
 

@@ -24,7 +24,16 @@ Depends on the maximun delay from R1 though combinational logic to R2
 ![image](https://github.com/user-attachments/assets/4a2d36a2-a3be-4157-b562-a9d5eb8675f6)        
 Setup time 是由propagation delay决定的！     
 Tpcq = T propagation to q， Tccq = T contamination to q    
-![image](https://github.com/user-attachments/assets/2baf40e4-f80f-4b77-a94e-7fe95c10deae)    
-
+![image](https://github.com/user-attachments/assets/2baf40e4-f80f-4b77-a94e-7fe95c10deae)      
+一个例题     
+![image](https://github.com/user-attachments/assets/71847c48-1b7c-4502-a562-c42c1c9ee07f)      
+加上clock skew的情况： 
+![image](https://github.com/user-attachments/assets/e5585f2c-b9a6-4892-834e-d33225341a4f)     
+如果clock1 早，clock2晚，实际上，clock skew 带来了更多的余量 （Tc变相变长） 可比较坏的情况是：clk1 的时钟晚到了，所以Tc会被变相压短，所以有了公式：      
+Tc > Tpcq + Tpd + Tsu + Tskew  => Tpd < Tc - Tpcq - Tskew - Tsu;     
+![image](https://github.com/user-attachments/assets/4a847061-8112-4eef-b11f-9b9985cef0b6)   
+正常情况下是Tccq + Tcd > T hold; 可是如果CLK2 晚到了，相当于CLK1 提早开始，所以就变成了Tccq + Tcd > T hold + T skew;    
+变成了Tcd > T hold + Tskew + Tccq;   
+ 
 
 
